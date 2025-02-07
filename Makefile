@@ -16,7 +16,7 @@ KERNEL_HEADERS = $(shell find $(KERNEL_DIR) -name '*.h' | sort)
 
 KERNEL_OBJECTS = $(patsubst %.c,%.o,$(KERNEL_C_SOURCES)) $(patsubst %.rs,%.o,$(KERNEL_RS_SOURCES)) $(patsubst %.s,%.o,$(KERNEL_ASM_SOURCES))
 
-
+KERNEL_DEPS = $(KERNEL_OBJECTS:.o=.d)
 
 
 
@@ -47,7 +47,7 @@ $(OS_ENTRY): $(BOOT_OBJECTS) $(KERNEL_OBJECTS)
 
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -MMD -MP -MF $(@:.o=.d) $< -o $@
 
 
 %.o: %.rs
@@ -58,7 +58,7 @@ $(OS_ENTRY): $(BOOT_OBJECTS) $(KERNEL_OBJECTS)
 
 
 clean:
-	rm -f $(BOOT_OBJECTS) $(KERNEL_OBJECTS) $(KERNEL_BIN) $(OS_ENTRY)
+	rm -f $(BOOT_OBJECTS) $(KERNEL_OBJECTS) $(KERNEL_BIN) $(OS_ENTRY) $(KERNEL_DEPS)
 	rm -rf isodir revision.iso
 
 
@@ -85,3 +85,6 @@ run: revision.iso
 
 clang-format:
 	clang-format -i $(KERNEL_SOURCES)  $(KERNEL_HEADERS)
+
+
+-include $(KERNEL_DEPS)

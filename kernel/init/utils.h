@@ -126,14 +126,10 @@ static inline uint64_t get_cr0() {
 
 /* Invalidate the TLB (Translation Lookaside Buffer) for one specific virtual
  * address */
-static inline void invlpg(void *m) {
-  asm volatile("invlpg (%0)" : : "m"(m) : "memory");
-}
+static inline void invlpg(void *m) { asm volatile("invlpg (%0)" : : "m"(m) : "memory"); }
 
 /* Write a 64-bit value to a MSR */
-static inline void wrmsr(uint32_t id, uint64_t value) {
-  asm volatile("wrmsr" : : "c"(id), "A"(value));
-}
+static inline void wrmsr(uint32_t id, uint64_t value) { asm volatile("wrmsr" : : "c"(id), "A"(value)); }
 
 /* Read a 64-bit value from a MSR */
 static inline uint64_t rdmsr(uint32_t id) {

@@ -3,6 +3,8 @@
 
 #include <kernel/klibc/kstring.h>
 
+const char *hex = "0123456789ABCDEF";
+
 // Memory functions
 
 void *memcpy(void *dest, const void *src, size_t count) {
@@ -258,7 +260,7 @@ char *lltoa(long long value, char *str, int base) {
   int ti = 0;
   while (value) {
     int rem = value % base;
-    tmp[ti++] = (rem > 9) ? (rem - 10) + 'a' : rem + '0';
+    tmp[ti++] = hex[rem];
     value = value / base;
   }
 
@@ -303,6 +305,7 @@ char *utoa(unsigned value, char *str, int base) {
 char *ultoa(unsigned long value, char *str, int base) {
   return ulltoa(value, str, base);
 }
+
 char *ulltoa(unsigned long long value, char *str, int base) {
   int si = 0;
 
@@ -310,7 +313,7 @@ char *ulltoa(unsigned long long value, char *str, int base) {
   int ti = 0;
   while (value) {
     int rem = value % base;
-    tmp[ti++] = (rem > 9) ? (rem - 10) + 'a' : rem + '0';
+    tmp[ti++] = hex[rem];
     value = value / base;
   }
 

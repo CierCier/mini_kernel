@@ -1,15 +1,243 @@
+/*
+ * Copyright (C) 2007-2024 Free Software Foundation, Inc.
+ *
+ * This file is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 3, or (at your option) any
+ * later version.
+ *
+ * This file is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * Under Section 7 of GPL version 3, you are granted additional
+ * permissions described in the GCC Runtime Library Exception, version
+ * 3.1, as published by the Free Software Foundation.
+ *
+ * You should have received a copy of the GNU General Public License and
+ * a copy of the GCC Runtime Library Exception along with this program;
+ * see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
 
+#pragma once
 
-#include <kernel/init/io.h>
+/* %ecx */
 
-#include <kernel.h>
+#define bit_SSE3 (1 << 0)
+#define bit_PCLMUL (1 << 1)
+#define bit_LZCNT (1 << 5)
+#define bit_SSSE3 (1 << 9)
+#define bit_FMA (1 << 12)
+#define bit_CMPXCHG16B (1 << 13)
+#define bit_SSE4_1 (1 << 19)
+#define bit_SSE4_2 (1 << 20)
+#define bit_MOVBE (1 << 22)
+#define bit_POPCNT (1 << 23)
+#define bit_AES (1 << 25)
+#define bit_XSAVE (1 << 26)
+#define bit_OSXSAVE (1 << 27)
+#define bit_AVX (1 << 28)
+#define bit_F16C (1 << 29)
+#define bit_RDRND (1 << 30)
 
-#define CPUID_VENDOR_OLDAMD "AMDisbetter!"
+/* %edx */
+#define bit_CMPXCHG8B (1 << 8)
+#define bit_CMOV (1 << 15)
+#define bit_ACPI (1 << 22)
+#define bit_MMX (1 << 23)
+#define bit_FXSAVE (1 << 24)
+#define bit_SSE (1 << 25)
+#define bit_SSE2 (1 << 26)
+
+/* Extended Features (%eax == 0x80000001) */
+/* %ecx */
+#define bit_LAHF_LM (1 << 0)
+#define bit_ABM (1 << 5)
+#define bit_SSE4a (1 << 6)
+#define bit_PRFCHW (1 << 8)
+#define bit_XOP (1 << 11)
+#define bit_LWP (1 << 15)
+#define bit_FMA4 (1 << 16)
+#define bit_TBM (1 << 21)
+#define bit_MWAITX (1 << 29)
+
+/* %edx */
+#define bit_MMXEXT (1 << 22)
+#define bit_LM (1 << 29)
+#define bit_3DNOWP (1 << 30)
+#define bit_3DNOW (1u << 31)
+
+/* %ebx  */
+#define bit_CLZERO (1 << 0)
+#define bit_WBNOINVD (1 << 9)
+
+/* Extended Features Leaf (%eax == 7, %ecx == 0) */
+/* %ebx */
+#define bit_FSGSBASE (1 << 0)
+#define bit_SGX (1 << 2)
+#define bit_BMI (1 << 3)
+#define bit_HLE (1 << 4)
+#define bit_AVX2 (1 << 5)
+#define bit_BMI2 (1 << 8)
+#define bit_RTM (1 << 11)
+#define bit_AVX512F (1 << 16)
+#define bit_AVX512DQ (1 << 17)
+#define bit_RDSEED (1 << 18)
+#define bit_ADX (1 << 19)
+#define bit_AVX512IFMA (1 << 21)
+#define bit_CLFLUSHOPT (1 << 23)
+#define bit_CLWB (1 << 24)
+#define bit_AVX512PF (1 << 26)
+#define bit_AVX512ER (1 << 27)
+#define bit_AVX512CD (1 << 28)
+#define bit_SHA (1 << 29)
+#define bit_AVX512BW (1 << 30)
+#define bit_AVX512VL (1u << 31)
+
+/* %ecx */
+#define bit_PREFETCHWT1 (1 << 0)
+#define bit_AVX512VBMI (1 << 1)
+#define bit_PKU (1 << 3)
+#define bit_OSPKE (1 << 4)
+#define bit_WAITPKG (1 << 5)
+#define bit_AVX512VBMI2 (1 << 6)
+#define bit_SHSTK (1 << 7)
+#define bit_GFNI (1 << 8)
+#define bit_VAES (1 << 9)
+#define bit_VPCLMULQDQ (1 << 10)
+#define bit_AVX512VNNI (1 << 11)
+#define bit_AVX512BITALG (1 << 12)
+#define bit_AVX512VPOPCNTDQ (1 << 14)
+#define bit_RDPID (1 << 22)
+#define bit_KL (1 << 23)
+#define bit_CLDEMOTE (1 << 25)
+#define bit_MOVDIRI (1 << 27)
+#define bit_MOVDIR64B (1 << 28)
+#define bit_ENQCMD (1 << 29)
+
+/* %edx */
+#define bit_AVX5124VNNIW (1 << 2)
+#define bit_AVX5124FMAPS (1 << 3)
+#define bit_UINTR (1 << 5)
+#define bit_AVX512VP2INTERSECT (1 << 8)
+#define bit_SERIALIZE (1 << 14)
+#define bit_TSXLDTRK (1 << 16)
+#define bit_PCONFIG (1 << 18)
+#define bit_IBT (1 << 20)
+#define bit_AMX_BF16 (1 << 22)
+#define bit_AVX512FP16 (1 << 23)
+#define bit_AMX_TILE (1 << 24)
+#define bit_AMX_INT8 (1 << 25)
+
+/* Extended Features Sub-leaf (%eax == 7, %ecx == 1) */
+/* %eax */
+#define bit_SHA512 (1 << 0)
+#define bit_SM3 (1 << 1)
+#define bit_SM4 (1 << 2)
+#define bit_RAOINT (1 << 3)
+#define bit_AVXVNNI (1 << 4)
+#define bit_AVX512BF16 (1 << 5)
+#define bit_CMPCCXADD (1 << 7)
+#define bit_AMX_COMPLEX (1 << 8)
+#define bit_AMX_FP16 (1 << 21)
+#define bit_HRESET (1 << 22)
+#define bit_AVXIFMA (1 << 23)
+
+/* %edx */
+#define bit_AVXVNNIINT8 (1 << 4)
+#define bit_AVXNECONVERT (1 << 5)
+#define bit_AVXVNNIINT16 (1 << 10)
+#define bit_PREFETCHI (1 << 14)
+#define bit_USER_MSR (1 << 15)
+#define bit_AVX10 (1 << 19)
+#define bit_APX_F (1 << 21)
+
+/* Extended State Enumeration Sub-leaf (%eax == 0xd, %ecx == 1) */
+#define bit_XSAVEOPT (1 << 0)
+#define bit_XSAVEC (1 << 1)
+#define bit_XSAVES (1 << 3)
+
+/* PT sub leaf (%eax == 0x14, %ecx == 0) */
+/* %ebx */
+#define bit_PTWRITE (1 << 4)
+
+/* Keylocker leaf (%eax == 0x19) */
+/* %ebx */
+#define bit_AESKLE (1 << 0)
+#define bit_WIDEKL (1 << 2)
+
+/* AVX10 sub leaf (%eax == 0x24) */
+/* %ebx */
+#define bit_AVX10_256 (1 << 17)
+#define bit_AVX10_512 (1 << 18)
+
+/* Signatures for different CPU implementations as returned in uses
+   of cpuid with level 0.  */
+#define signature_AMD_ebx 0x68747541
+#define signature_AMD_ecx 0x444d4163
+#define signature_AMD_edx 0x69746e65
+
+#define signature_CENTAUR_ebx 0x746e6543
+#define signature_CENTAUR_ecx 0x736c7561
+#define signature_CENTAUR_edx 0x48727561
+
+#define signature_CYRIX_ebx 0x69727943
+#define signature_CYRIX_ecx 0x64616574
+#define signature_CYRIX_edx 0x736e4978
+
+#define signature_INTEL_ebx 0x756e6547
+#define signature_INTEL_ecx 0x6c65746e
+#define signature_INTEL_edx 0x49656e69
+
+#define signature_TM1_ebx 0x6e617254
+#define signature_TM1_ecx 0x55504361
+#define signature_TM1_edx 0x74656d73
+
+#define signature_TM2_ebx 0x756e6547
+#define signature_TM2_ecx 0x3638784d
+#define signature_TM2_edx 0x54656e69
+
+#define signature_NSC_ebx 0x646f6547
+#define signature_NSC_ecx 0x43534e20
+#define signature_NSC_edx 0x79622065
+
+#define signature_NEXGEN_ebx 0x4778654e
+#define signature_NEXGEN_ecx 0x6e657669
+#define signature_NEXGEN_edx 0x72446e65
+
+#define signature_RISE_ebx 0x65736952
+#define signature_RISE_ecx 0x65736952
+#define signature_RISE_edx 0x65736952
+
+#define signature_SIS_ebx 0x20536953
+#define signature_SIS_ecx 0x20536953
+#define signature_SIS_edx 0x20536953
+
+#define signature_UMC_ebx 0x20434d55
+#define signature_UMC_ecx 0x20434d55
+#define signature_UMC_edx 0x20434d55
+
+#define signature_VIA_ebx 0x20414956
+#define signature_VIA_ecx 0x20414956
+#define signature_VIA_edx 0x20414956
+
+#define signature_VORTEX_ebx 0x74726f56
+#define signature_VORTEX_ecx 0x436f5320
+#define signature_VORTEX_edx 0x36387865
+
+#define signature_SHANGHAI_ebx 0x68532020
+#define signature_SHANGHAI_ecx 0x20206961
+#define signature_SHANGHAI_edx 0x68676e61
+
+// Vendor strings from CPUs.
 #define CPUID_VENDOR_AMD "AuthenticAMD"
+#define CPUID_VENDOR_AMD_OLD "AMDisbetter!" // Early engineering samples of AMD K5 processor
 #define CPUID_VENDOR_INTEL "GenuineIntel"
-#define CPUID_VENDOR_VIA "CentaurHauls"
-#define CPUID_VENDOR_OLDTRANSMETA "TransmetaCPU"
+#define CPUID_VENDOR_VIA "VIA VIA VIA "
 #define CPUID_VENDOR_TRANSMETA "GenuineTMx86"
+#define CPUID_VENDOR_TRANSMETA_OLD "TransmetaCPU"
 #define CPUID_VENDOR_CYRIX "CyrixInstead"
 #define CPUID_VENDOR_CENTAUR "CentaurHauls"
 #define CPUID_VENDOR_NEXGEN "NexGenDriven"
@@ -17,82 +245,112 @@
 #define CPUID_VENDOR_SIS "SiS SiS SiS "
 #define CPUID_VENDOR_NSC "Geode by NSC"
 #define CPUID_VENDOR_RISE "RiseRiseRise"
+#define CPUID_VENDOR_VORTEX "Vortex86 SoC"
+#define CPUID_VENDOR_AO486 "MiSTer AO486"
+#define CPUID_VENDOR_AO486_OLD "GenuineAO486"
+#define CPUID_VENDOR_ZHAOXIN "  Shanghai  "
+#define CPUID_VENDOR_HYGON "HygonGenuine"
+#define CPUID_VENDOR_ELBRUS "E2K MACHINE "
 
-#define CPUID_FEAT_ECX_SSE3 (1 << 0)
-#define CPUID_FEAT_ECX_PCLMUL (1 << 1)
-#define CPUID_FEAT_ECX_DTES64 (1 << 2)
-#define CPUID_FEAT_ECX_MONITOR (1 << 3)
-#define CPUID_FEAT_ECX_DS_CPL (1 << 4)
-#define CPUID_FEAT_ECX_VMX (1 << 5)
-#define CPUID_FEAT_ECX_SMX (1 << 6)
-#define CPUID_FEAT_ECX_EST (1 << 7)
-#define CPUID_FEAT_ECX_TM2 (1 << 8)
-#define CPUID_FEAT_ECX_SSSE3 (1 << 9)
-#define CPUID_FEAT_ECX_CID (1 << 10)
-#define CPUID_FEAT_ECX_FMA (1 << 12)
-#define CPUID_FEAT_ECX_CX16 (1 << 13)
-#define CPUID_FEAT_ECX_ETPRD (1 << 14)
-#define CPUID_FEAT_ECX_PDCM (1 << 15)
-#define CPUID_FEAT_ECX_DCA (1 << 18)
-#define CPUID_FEAT_ECX_SSE4_1 (1 << 19)
-#define CPUID_FEAT_ECX_SSE4_2 (1 << 20)
-#define CPUID_FEAT_ECX_x2APIC (1 << 21)
-#define CPUID_FEAT_ECX_MOVBE (1 << 22)
-#define CPUID_FEAT_ECX_POPCNT (1 << 23)
-#define CPUID_FEAT_ECX_AES (1 << 25)
-#define CPUID_FEAT_ECX_XSAVE (1 << 26)
-#define CPUID_FEAT_ECX_OSXSAVE (1 << 27)
-#define CPUID_FEAT_ECX_AVX (1 << 28)
+// Vendor strings from hypervisors.
+#define CPUID_VENDOR_QEMU "TCGTCGTCGTCG"
+#define CPUID_VENDOR_KVM " KVMKVMKVM  "
+#define CPUID_VENDOR_VMWARE "VMwareVMware"
+#define CPUID_VENDOR_VIRTUALBOX "VBoxVBoxVBox"
+#define CPUID_VENDOR_XEN "XenVMMXenVMM"
+#define CPUID_VENDOR_HYPERV "Microsoft Hv"
+#define CPUID_VENDOR_PARALLELS " prl hyperv "
+#define CPUID_VENDOR_PARALLELS_ALT                                                                                     \
+  " lrpepyh vr " // Sometimes Parallels incorrectly encodes "prl hyperv" as
+                 // "lrpepyh vr" due to an endianness mismatch.
+#define CPUID_VENDOR_BHYVE "bhyve bhyve "
+#define CPUID_VENDOR_QNX " QNXQVMBSQG "
 
-#define CPUID_FEAT_EDX_FPU (1 << 0)
-#define CPUID_FEAT_EDX_VME (1 << 1)
-#define CPUID_FEAT_EDX_DE (1 << 2)
-#define CPUID_FEAT_EDX_PSE (1 << 3)
-#define CPUID_FEAT_EDX_TSC (1 << 4)
-#define CPUID_FEAT_EDX_MSR (1 << 5)
-#define CPUID_FEAT_EDX_PAE (1 << 6)
-#define CPUID_FEAT_EDX_MCE (1 << 7)
-#define CPUID_FEAT_EDX_CX8 (1 << 8)
-#define CPUID_FEAT_EDX_APIC (1 << 9)
-#define CPUID_FEAT_EDX_SEP (1 << 11)
-#define CPUID_FEAT_EDX_MTRR (1 << 12)
-#define CPUID_FEAT_EDX_PGE (1 << 13)
-#define CPUID_FEAT_EDX_MCA (1 << 14)
-#define CPUID_FEAT_EDX_CMOV (1 << 15)
-#define CPUID_FEAT_EDX_PAT (1 << 16)
-#define CPUID_FEAT_EDX_PSE36 (1 << 17)
-#define CPUID_FEAT_EDX_PSN (1 << 18)
-#define CPUID_FEAT_EDX_CLF (1 << 19)
-#define CPUID_FEAT_EDX_DTES (1 << 21)
-#define CPUID_FEAT_EDX_ACPI (1 << 22)
-#define CPUID_FEAT_EDX_MMX (1 << 23)
-#define CPUID_FEAT_EDX_FXSR (1 << 24)
-#define CPUID_FEAT_EDX_SSE (1 << 25)
-#define CPUID_FEAT_EDX_SSE2 (1 << 26)
-#define CPUID_FEAT_EDX_SS (1 << 27)
-#define CPUID_FEAT_EDX_HTT (1 << 28)
-#define CPUID_FEAT_EDX_TM1 (1 << 29)
-#define CPUID_FEAT_EDX_IA64 (1 << 30)
-#define CPUID_FEAT_EDX_PBE (1 << 31)
+#ifndef __x86_64__
+/* At least one cpu (Winchip 2) does not set %ebx and %ecx
+   for cpuid leaf 1. Forcibly zero the two registers before
+   calling cpuid as a precaution.  */
+#define __cpuid(level, a, b, c, d)                                                                                     \
+  do {                                                                                                                 \
+    if (__builtin_constant_p(level) && (level) != 1)                                                                   \
+      __asm__ __volatile__("cpuid\n\t" : "=a"(a), "=b"(b), "=c"(c), "=d"(d) : "0"(level));                             \
+    else                                                                                                               \
+      __asm__ __volatile__("cpuid\n\t" : "=a"(a), "=b"(b), "=c"(c), "=d"(d) : "0"(level), "1"(0), "2"(0));             \
+  } while (0)
+#else
+#define __cpuid(level, a, b, c, d) __asm__ __volatile__("cpuid\n\t" : "=a"(a), "=b"(b), "=c"(c), "=d"(d) : "0"(level))
+#endif
 
-#define CPUID_GETVENDORSTRING 0x00000000
-#define CPUID_GETFEATURES 0x00000001
-#define CPUID_GETTLB 0x00000002
-#define CPUID_GETSERIAL 0x00000003
+#define __cpuid_count(level, count, a, b, c, d)                                                                        \
+  __asm__ __volatile__("cpuid\n\t" : "=a"(a), "=b"(b), "=c"(c), "=d"(d) : "0"(level), "2"(count))
 
-#define CPUID_INTELEXTENDED 0x80000000
-#define CPUID_INTELFEATURES 0x80000001
-#define CPUID_INTELBRANDSTRING 0x80000002
-#define CPUID_INTELBRANDSTRINGMORE 0x80000003
-#define CPUID_INTELBRANDSTRINGEND 0x80000004
+/* Return highest supported input value for cpuid instruction.  ext can
+   be either 0x0 or 0x80000000 to return highest supported value for
+   basic or extended cpuid information.  Function returns 0 if cpuid
+   is not supported or whatever cpuid returns in eax register.  If sig
+   pointer is non-null, then first four bytes of the signature
+   (as found in ebx register) are returned in location pointed by sig.  */
 
-/* Get a complete cpuid request */
-static inline void cpuid_get(uint64_t code, uint32_t str[4]) {
-  asm volatile("cpuid"
-               : "=a"(*str), "=b"(*(str + 1)), "=c"(*(str + 2)),
-                 "=d"(*(str + 3))
-               : "a"(code));
+static __inline unsigned int __get_cpuid_max(unsigned int __ext, unsigned int *__sig) {
+  unsigned int __eax, __ebx, __ecx, __edx;
+
+  /* Host supports cpuid.  Return highest supported cpuid input value.  */
+  __cpuid(__ext, __eax, __ebx, __ecx, __edx);
+
+  if (__sig)
+    *__sig = __ebx;
+
+  return __eax;
 }
 
-/* Diagnostic print of a cpuid result */
-void cpuid_diag(uint32_t str[4]);
+/* Return cpuid data for requested cpuid leaf, as found in returned
+   eax, ebx, ecx and edx registers.  The function checks if cpuid is
+   supported and returns 1 for valid cpuid information or 0 for
+   unsupported cpuid leaf.  All pointers are required to be non-null.  */
+
+static __inline int __get_cpuid(unsigned int __leaf, unsigned int *__eax, unsigned int *__ebx, unsigned int *__ecx,
+                                unsigned int *__edx) {
+  unsigned int __ext = __leaf & 0x80000000;
+  unsigned int __maxlevel = __get_cpuid_max(__ext, 0);
+
+  if (__maxlevel == 0 || __maxlevel < __leaf)
+    return 0;
+
+  __cpuid(__leaf, *__eax, *__ebx, *__ecx, *__edx);
+  return 1;
+}
+
+/* Same as above, but sub-leaf can be specified.  */
+
+static __inline int __get_cpuid_count(unsigned int __leaf, unsigned int __subleaf, unsigned int *__eax,
+                                      unsigned int *__ebx, unsigned int *__ecx, unsigned int *__edx) {
+  unsigned int __ext = __leaf & 0x80000000;
+  unsigned int __maxlevel = __get_cpuid_max(__ext, 0);
+
+  if (__builtin_expect(__maxlevel == 0, 0) || __maxlevel < __leaf)
+    return 0;
+
+  __cpuid_count(__leaf, __subleaf, *__eax, *__ebx, *__ecx, *__edx);
+  return 1;
+}
+
+static __inline void __cpuidex(int __cpuid_info[4], int __leaf, int __subleaf) {
+  __cpuid_count(__leaf, __subleaf, __cpuid_info[0], __cpuid_info[1], __cpuid_info[2], __cpuid_info[3]);
+}
+
+//
+void check_cpuid_features();
+
+/* Example: Get CPU's model number */
+static __inline int get_model(void) {
+  int ebx, unused;
+  __cpuid(0, unused, ebx, unused, unused);
+  return ebx;
+}
+
+/* Example: Check for builtin local APIC. */
+static __inline int check_apic(void) {
+  unsigned int eax, unused, edx;
+  __get_cpuid(1, &eax, &unused, &unused, &edx);
+  return edx & bit_ACPI;
+}

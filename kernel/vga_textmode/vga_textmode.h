@@ -33,6 +33,5 @@ int vga_printf(char *fmt, ...);
 
 void set_cursor_pos(int x, int y);
 
-
 void set_text_color(uint8_t fg, uint8_t bg);
 void set_background_color(uint8_t bg);

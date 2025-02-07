@@ -11,5 +11,3 @@ struct gdt_entry {
   uint8_t granularity;
   uint8_t base_high;
 } __attribute__((packed));
-
-

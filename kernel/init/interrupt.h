@@ -81,7 +81,7 @@ struct _registers {
   uint64_t ds;                                     /* once off push */
   uint64_t rdi, rsi, rbp, rsp, rbx, rdx, rcx, rax; /* provided by push_all */
   uint64_t int_no, err_code;                       /* provided by the macro */
-  uint64_t rip, cs, rflags, user_rsp, user_ss; /* provided by the processor */
+  uint64_t rip, cs, rflags, user_rsp, user_ss;     /* provided by the processor */
 };
 
 /* Format of an interrupt handler */

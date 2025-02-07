@@ -22,3 +22,5 @@ extern void panic(const char *msg, const char *file, uint32_t line);
 extern void panic_assert(const char *file, uint32_t line, const char *desc);
 
 extern uint32_t rand();
+
+extern const char *ASCII_ART;

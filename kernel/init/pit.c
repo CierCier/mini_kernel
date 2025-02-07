@@ -1,5 +1,7 @@
 
 #include <kernel/init/pit.h>
+#include <stdint.h>
+uint32_t CountDown = 0;
 
 /* Initialize the timer to run at a frequency */
 void pit_init(uint32_t freq) {
@@ -19,3 +21,5 @@ void pit_init(uint32_t freq) {
   outb(0x40, l);
   outb(0x40, h);
 }
+
+uint32_t pit_get_countdown() { return CountDown; }

@@ -134,8 +134,9 @@ int vga_printf(char *format, ...) {
       case 'x':
       case 'X': { // Hexadecimal
         unsigned int num = va_arg(args, unsigned int);
-        char num_buf[10];
-        utoa(num, num_buf, 16);
+        char num_buf[10] = "0x"; // Prefix with 0x
+
+        utoa(num, num_buf + 2, 16);
         size_t len = strlen(num_buf);
         if (bi + len < sizeof(buffer) - 1) {
           strcpy(buffer + bi, num_buf);
