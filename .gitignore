@@ -1,0 +1,13 @@
+
+isodir/
+*.o
+*.bin
+*.iso
+*.log
+*.so
+*.img
+*.elf
+*.a
+
+.cache/
+compile_commands.json

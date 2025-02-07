@@ -1,0 +1,18 @@
+
+#include "cpuid.h"
+#include <vga_textmode/vga_textmode.h>
+
+/* Diagnostic print of a cpuid result */
+void cpuid_diag(uint32_t str[4]) {
+  char *a = (char *)&str, *b = (char *)&str[1], *c = (char *)&str[2],
+       *d = (char *)&str[3];
+
+  vga_printf("[rax] 0x%08x \"%c%c%c%c\"\n", str[0], *a, *(a + 1), *(a + 2),
+             *(a + 3));
+  vga_printf("[rbx] 0x%08x \"%c%c%c%c\"\n", str[2], *b, *(b + 1), *(b + 2),
+             *(b + 3));
+  vga_printf("[rcx] 0x%08x \"%c%c%c%c\"\n", str[3], *c, *(c + 1), *(c + 2),
+             *(c + 3));
+  vga_printf("[rdx] 0x%08x \"%c%c%c%c\"\n", str[3], *d, *(d + 1), *(d + 2),
+             *(d + 3));
+}
